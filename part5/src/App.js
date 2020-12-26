@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {
+  Switch, Route, Link, useRouteMatch
+} from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -8,6 +11,28 @@ import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
 import { create, initializeBlogs, like, remove } from './reducers/blogReducer'
 import { initializeUser, login, logout } from './reducers/userReducer'
+
+const User = ({ userId, blogs }) => {
+  if (!userId) {
+    return null
+  }
+  console.log(blogs)
+  const name = blogs[0].user.name
+
+  return (
+    <div>
+      <h3>{name}</h3>
+      <h4>added blogs</h4>
+      <ul>
+        {blogs.map(blog => {
+          return (
+            <li key={blog.id}>{blog.title}</li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
 
 const App = () => {
   const dispatch = useDispatch()
@@ -62,8 +87,17 @@ const App = () => {
     }
   }
 
+  const userIdsMappedToBlogs = Array.from(new Set(blogs.map(blog => blog.user.id))).map(userId => {
+    return [userId, blogs.filter(blog => blog.user.id === userId)]
+  })
+
+  const match = useRouteMatch('/users/:id')
+  const mappedUser = match
+    ? userIdsMappedToBlogs.find(tuple => tuple[0] === match.params.id)
+    : null
+  console.log({mappedUser})
   return (
-    <div>
+    <>
       <Notification />
       {user === null ? (
         <LoginForm onLogin={handleLogin} />
@@ -73,21 +107,49 @@ const App = () => {
           <h2>blogs</h2>
           <div>{user.name} is logged in. <button onClick={handleLogout}>log out</button></div>
           <br />
-          <Togglable buttonLabel="new blog" >
-            <BlogForm onCreate={handleCreateBlog} />
-          </Togglable>
-          {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateBlog={() => handleUpdateBlog(blog)}
-              removeBlog={() => handleRemoveBlog(blog)}
-              authenticatedUsername={user.username} />
-          )}
+          <Switch>
+            <Route path="/users/:id">
+              <User userId={mappedUser ? mappedUser[0] : null} blogs={mappedUser ? mappedUser[1] : []} />
+            </Route>
+            <Route path="/users" >
+                <h2>Users</h2>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th></th>
+                      <th>blogs created</th>
+                    </tr>
+                    {userIdsMappedToBlogs.map(tuple => {
+                      return (
+                        <tr key={tuple[0]}>
+                          <td>
+                            <Link to={`/users/${tuple[0]}`}>{tuple[1][0].user.name}</Link>
+                          </td>
+                          <td>{tuple[1].length}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </Route>
+              <Route path="/">
+                <Togglable buttonLabel="new blog" >
+                  <BlogForm onCreate={handleCreateBlog} />
+                </Togglable>
+                {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    updateBlog={() => handleUpdateBlog(blog)}
+                    removeBlog={() => handleRemoveBlog(blog)}
+                    authenticatedUsername={user.username} />
+              )}
+            </Route>
+          </Switch>
         </>
       )
     }
-    </div>
+    </>
   )
 }
 
