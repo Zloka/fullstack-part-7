@@ -9,7 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, like } from './reducers/blogReducer'
+import { create, initializeBlogs, like } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -53,8 +53,7 @@ const App = () => {
 
   const handleCreateBlog = async (title, author, url) => {
     try {
-      const result = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat({ ...result, user }))
+      dispatch(create(title, author, url))
       dispatch(setNotification('Successfully created blog!', 5))
     } catch (error) {
       dispatch(setNotification('Failed to create blog!', 5))
