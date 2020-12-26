@@ -9,7 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs, like } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -63,9 +63,8 @@ const App = () => {
   }
 
   const handleUpdateBlog = async (blog) => {
-    const { id, likes } = blog
     try {
-      setBlogs(blogs.map(existingBlog => existingBlog.id !== id ? existingBlog : { ...existingBlog, likes: likes + 1 }))
+      dispatch(like(blog))
     } catch (error) {
       console.log(error)
       dispatch(setNotification('Failed to update blog!', 5))
