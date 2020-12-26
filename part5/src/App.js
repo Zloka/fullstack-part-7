@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -13,8 +13,8 @@ import { create, initializeBlogs, like } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -75,7 +75,7 @@ const App = () => {
     try {
       if (window.confirm('are you sure you want to remove the blog?')) {
         await blogService.remove(id)
-        setBlogs(blogs.filter(existingBlog => existingBlog.id !== id))
+        // setBlogs(blogs.filter(existingBlog => existingBlog.id !== id))
       }
     } catch (error) {
       console.log(error)
