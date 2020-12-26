@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -7,8 +8,10 @@ import { userStateStorageKey } from './config'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
@@ -38,13 +41,9 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     } catch (error) {
-      handleSetMessage('Failed to login!')
+      dispatch(setNotification('Failed to login!', 5))
       console.log(error)
     }
-  }
-
-  const handleSetMessage = (newMessage) => {
-    console.log("Implementation missing!")
   }
 
   const handleLogout = (event) => {
@@ -57,9 +56,9 @@ const App = () => {
     try {
       const result = await blogService.create({ title, author, url })
       setBlogs(blogs.concat({ ...result, user }))
-      handleSetMessage('Successfully created blog!')
+      dispatch(setNotification('Successfully created blog!', 5))
     } catch (error) {
-      handleSetMessage('Failed to create blog!')
+      dispatch(setNotification('Failed to create blog!', 5))
       console.log(error)
     }
   }
@@ -70,7 +69,7 @@ const App = () => {
       setBlogs(blogs.map(existingBlog => existingBlog.id !== id ? existingBlog : { ...existingBlog, likes: likes + 1 }))
     } catch (error) {
       console.log(error)
-      handleSetMessage('Failed to update blog!')
+      dispatch(setNotification('Failed to update blog!', 5))
     }
   }
 
@@ -83,7 +82,7 @@ const App = () => {
       }
     } catch (error) {
       console.log(error)
-      handleSetMessage('Failed to remove blog!')
+      dispatch(setNotification('Failed to remove blog!', 5))
     }
   }
 
