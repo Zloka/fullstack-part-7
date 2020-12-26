@@ -9,7 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
-import { create, initializeBlogs, like } from './reducers/blogReducer'
+import { create, initializeBlogs, like, remove } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -74,8 +74,7 @@ const App = () => {
     const { id } = blog
     try {
       if (window.confirm('are you sure you want to remove the blog?')) {
-        await blogService.remove(id)
-        // setBlogs(blogs.filter(existingBlog => existingBlog.id !== id))
+        dispatch(remove(id))
       }
     } catch (error) {
       console.log(error)
