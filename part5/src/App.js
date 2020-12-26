@@ -11,7 +11,6 @@ import Togglable from './components/Togglable'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -45,10 +44,7 @@ const App = () => {
   }
 
   const handleSetMessage = (newMessage) => {
-    setMessage(newMessage)
-    setTimeout(() => {
-      setMessage(null)
-    }, 5 * 1000)
+    console.log("Implementation missing!")
   }
 
   const handleLogout = (event) => {
@@ -93,7 +89,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       {user === null ? (
         <LoginForm onLogin={handleLogin} />
       )
