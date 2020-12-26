@@ -13,6 +13,8 @@ const reducer = (state = [], action) => {
       return state.concat(action.data)
     case 'INIT_BLOGS':
       return action.data
+    case 'REMOVE':
+      return state.filter(blog => blog.id !== action.data)
     default:
       break
   }
@@ -40,6 +42,16 @@ const create = (title, author, url) => {
   }
 }
 
+const remove = (id) => {
+  return async dispatch => {
+    await blogService.remove(id)
+    dispatch({
+      type: 'REMOVE',
+      data: id
+    })
+  }
+}
+
 const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll()
@@ -51,4 +63,4 @@ const initializeBlogs = () => {
 }
 
 export default reducer
-export { like, create, initializeBlogs }
+export { like, create, initializeBlogs, remove }
