@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Hello World 2: The great follow-up greeting!",
+    "author": "Zacharias Levander",
+    "url": "www.google.com",
+    "likes": 1337
+}
