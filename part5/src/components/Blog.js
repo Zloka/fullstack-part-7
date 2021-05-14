@@ -1,28 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const HiddenBlogContent = ({ url, likes, onLike, name, onRemove, shouldShowRemove }) => {
-  const handleLikeClick = (event) => {
-    event.preventDefault()
-    onLike()
-  }
-
-  const handleRemoveClick = (event) => {
-    event.preventDefault()
-    onRemove()
-  }
-
-  return (
-    <>
-      <div>{url}</div>
-      <div>{likes} <button id="like-button" onClick={handleLikeClick}>like</button></div>
-      <div>{name}</div>
-      {shouldShowRemove ? <button id="remove-button" onClick={handleRemoveClick}>remove</button> : null}
-    </>
-  )
-}
-
-const Blog = ({ blog, updateBlog, removeBlog, authenticatedUsername }) => {
-  const [hidden, setHidden] = useState(true)
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -33,20 +12,8 @@ const Blog = ({ blog, updateBlog, removeBlog, authenticatedUsername }) => {
 
   return (
     <div id="blog" style={blogStyle}>
-      <div>
-        <span>{blog.title}</span> <span>{blog.author}</span> <button id="toggle-view-button" onClick={() => setHidden(!hidden)}>{hidden ? 'view' : 'hide'}</button>
-      </div>
-      {hidden
-        ? null
-        : <HiddenBlogContent
-            url={blog.url}
-            likes={blog.likes}
-            onLike={updateBlog}
-            name={blog.user.name}
-            onRemove={removeBlog}
-            shouldShowRemove={authenticatedUsername === blog.user.username}
-          />}
-  </div>
+      <Link to={`/blogs/${blog.id}`}><span>{blog.title}</span> <span>{blog.author}</span> </Link>
+    </div>
 )}
 
 export default Blog
