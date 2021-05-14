@@ -144,7 +144,8 @@ const App = () => {
                   onLike={() => handleUpdateBlog(mappedBlog)}
                   likes={mappedBlog.likes}
                   title={mappedBlog.title}
-                  url={mappedBlog.url} /> :
+                  url={mappedBlog.url}
+                  comments={mappedBlog.comments} /> :
                 <Redirect to="/" />}
             </Route>
               <Route path="/">
