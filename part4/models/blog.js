@@ -8,7 +8,8 @@ const blogSchema = new mongoose.Schema({
   },
   author: String,
   url: String,
-  likes: Number
+  likes: Number,
+  comments: [String],
 })
 
 blogSchema.set('toJSON', {
