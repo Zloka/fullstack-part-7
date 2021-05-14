@@ -38,6 +38,25 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(result)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
+
+  if (!comment) {
+    return response.status(400).json({
+      error: 'A comment must be provided!'
+    })
+  }
+
+  const existingBlog = await Blog.findById(request.params.id)
+  if (existingBlog) {
+    existingBlog.comments = (existingBlog.comments || []).concat(comment)
+    await existingBlog.save()
+    return response.json(existingBlog)
+  } else {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+})
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
     await Blog.findByIdAndRemove(request.params.id)
