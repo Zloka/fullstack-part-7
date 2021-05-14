@@ -12,6 +12,7 @@ import BlogPage from './components/BlogPage'
 import { setNotification } from './reducers/notificationReducer'
 import { create, initializeBlogs, like, remove } from './reducers/blogReducer'
 import { initializeUser, login, logout } from './reducers/userReducer'
+import NavMenu from './components/NavMenu'
 
 const User = ({ userId, blogs }) => {
   if (!userId) {
@@ -108,8 +109,7 @@ const App = () => {
       )
       : (
         <>
-          <h2>blogs</h2>
-          <div>{user.name} is logged in. <button onClick={handleLogout}>log out</button></div>
+          <NavMenu username={user.name} onLogout={handleLogout} />
           <br />
           <Switch>
             <Route path="/users/:id">
