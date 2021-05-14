@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  Switch, Route, Link, useRouteMatch
+  Switch, Route, Link, useRouteMatch, Redirect
 } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import BlogPage from './components/BlogPage'
 import { setNotification } from './reducers/notificationReducer'
 import { create, initializeBlogs, like, remove } from './reducers/blogReducer'
 import { initializeUser, login, logout } from './reducers/userReducer'
@@ -95,7 +96,10 @@ const App = () => {
   const mappedUser = match
     ? userIdsMappedToBlogs.find(tuple => tuple[0] === match.params.id)
     : null
-  console.log({mappedUser})
+
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const mappedBlog = blogMatch ? blogs.find(blog => blog.id === blogMatch.params.id) : undefined
+
   return (
     <>
       <Notification />
@@ -132,6 +136,17 @@ const App = () => {
                   </tbody>
                 </table>
               </Route>
+            <Route path="/blogs/:id">
+              {mappedBlog ?
+                <BlogPage
+                  id={mappedBlog.id}
+                  author={mappedBlog.author}
+                  onLike={() => handleUpdateBlog(mappedBlog)}
+                  likes={mappedBlog.likes}
+                  title={mappedBlog.title}
+                  url={mappedBlog.url} /> :
+                <Redirect to="/" />}
+            </Route>
               <Route path="/">
                 <Togglable buttonLabel="new blog" >
                   <BlogForm onCreate={handleCreateBlog} />
